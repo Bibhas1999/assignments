@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>SHOPLANE - A Place For Shopping</title>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./style.css" />
+  <!-- Font-Awesome CDN -->
+  <link href="./stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat&amp;display=swap" rel="stylesheet" />
+  <!-- Slick Files -->
+  <link rel="stylesheet" type="text/css" href="./slick/slick/slick.css" />
+  <link rel="stylesheet" type="text/css" href="./slick/slick/slick-theme.css" />
+
+  <script src="./code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <!-- TopBar Start -->
+  <div id="top-bar">
+    <!-- Logo -->
+    <div class="logo">
+      <a href="./index.html">
+        <h4><span>SHOP</span>LANE</h4>
+      </a>
+    </div>
+    <!-- Menu Items -->
+    <ul class="nav-links">
+      <li><a href="./index.html">Home</a></li>
+      <li><a href="/index.html#clothing">Clothings</a></li>
+      <li><a href="/index.html#accessories">Accessories</a></li>
+    </ul>
+    <!-- Icons -->
+    <div class="icons">
+      <i class="fa fa-search"></i>
+      <div class="cart" id="cartIcon">
+        <a href="checkout.html">
+          <i class="fa fa-shopping-cart">
+            <span id="cart-count"></span>
+          </i>
+        </a>
+      </div>
+      <i class="fa fa-user-circle-o"></i>
+      <div class="burger">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+      </div>
+    </div>
+  </div>
+  <!-- TopBar End -->
+
+  <section id="product">
+    <div class="left-column">
+      <img id="productImg" src="" alt="">
+    </div>
+    <div class="right-column">
+      <div class="product-description">
+        <h1 id="name"></h1>
+        <h4 id="brand"></h4>
+        <h3>Price: Rs <span id="price"></span></h3>
+        <div class="description">
+          <h3>Description</h3>
+          <p id="description"></p>
+        </div>
+        <div class="product-preview">
+          <h3>Product Preview</h3>
+          <div class="previewImg">
+
+          </div>
+        </div>
+      </div>
+      <div class="btn">
+        <button id="add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- FOOTER SECTION START -->
+  <footer>
+    <ul class="online-store">
+      <li>
+        <h3>Online Store</h3>
+      </li>
+      <li><a href="#">Men Clothing</a></li>
+      <li><a href="#">Women Clothing</a></li>
+      <li><a href="#">Men Accessories</a></li>
+      <li><a href="#">Women Accessories</a></li>
+    </ul>
+    <ul class="helpful-links">
+      <li>
+        <h3>Helpful Links</h3>
+      </li>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <ul class="patners">
+      <li>
+        <h3>Patners</h3>
+      </li>
+      <li><a href="#">Zara</a></li>
+      <li><a href="#">Pantaloons</a></li>
+      <li><a href="#">Levis</a></li>
+      <li><a href="#">Ucb</a></li>
+      <li><a href="#">+ Many More</a></li>
+    </ul>
+    <ul class="address">
+      <li>
+        <h3>Address</h3>
+      </li>
+      <li>Building 101</li>
+      <li>Central Avenue</li>
+      <li>LA - 902722</li>
+      <li>United States</li>
+    </ul>
+  </footer>
+
+  <!-- FOOTER SECTION END  -->
+
+  <!-- JavaScript, jQuery & Slick Links -->
+  <script type="text/javascript" src="./slick/slick/slick.min.js"></script>
+  <script src="./index.js"></script>
+  <script>
+
+
+    let addToCartBtn = document.getElementById("add-to-cart");
+    let urlparams = new URLSearchParams(window.location.search);
+    let product_id = urlparams.get('product_id')
+    let detailsURL = `https://5d76bf96515d1a0014085cf9.mockapi.io/product/${product_id}`
+    let productImg = document.getElementById('productImg');
+    let name = document.getElementById('name');
+    let brand = document.getElementById('brand');
+    let price = document.getElementById('price');
+    let desc = document.getElementById('description');
+    let previewImg = document.getElementsByClassName('previewImg');
+
+    //fetch product details
+    fetchDetails = async (url) => {
+      let response = await fetch(url)
+      let data = await response.json()
+      console.log(data)
+      name.innerText = data.name
+      brand.innerText = data.brand
+      price.innerText = data.price
+      productImg.src = data.preview
+      desc.innerText = data.description
+
+      for (let i = 0; i < data.photos.length; i++) {
+        // console.log(data.photos[i])
+        var img = document.createElement('img')
+        img.setAttribute('id', 'img' + i)
+        img.classList.add('prevImg')
+        img.setAttribute('src', data.photos[i])
+        previewImg[0].appendChild(img)
+      }
+      let firstImage = document.querySelector('#img0');
+      firstImage.classList.add('active')
+      let all_imgs = document.querySelectorAll('#product > div.right-column > div.product-description > div.product-preview > div > img')
+      for (let j = 0; j < all_imgs.length; j++) {
+        all_imgs[j].addEventListener('click', () => {
+          productImg.src = all_imgs[j].src
+          let c = 0
+          while (c < all_imgs.length) {
+            all_imgs[c++].className = '';
+          }
+          all_imgs[j].className = 'active';
+        })
+      }
+      return data
+    }
+
+    fetchDetails(detailsURL)
+
+    
+
+    function addToCart(productData) {
+      if (window.localStorage.getItem("product-list") === null) {
+        myCartData = [];
+      }
+      else {
+        myCartData = JSON.parse(window.localStorage.getItem("product-list"));
+      }
+
+      if (myCartData.length === 0) {
+        var myObj = {
+          id: productData.id,
+          title: productData.name,
+          count: 1,
+          price: productData.price,
+          preview: productData.preview
+        };
+        myCartData.push(myObj);
+      }
+
+      else if (myCartData.length != 0) {
+        var w = 0;
+        for (var i = 0; i < myCartData.length; i++) {
+          if (myCartData[i].id == productData.id) {
+            myCartData[i].count = parseInt(myCartData[i].count) + 1;
+            w += 1;
+          }
+        }
+        if (w == 0) {
+          var myObj = {
+            id: productData.id,
+            title: productData.name,
+            count: 1,
+            price: productData.price,
+            preview: productData.preview
+          };
+          myCartData.push(myObj);
+        }
+      }
+      window.localStorage.setItem("product-list", JSON.stringify(myCartData));
+    }
+
+    function cartCount() {
+      if (window.localStorage.getItem("cart-count") === null) {
+        cartIntialValue = 0;
+      } else {
+        cartIntialValue = JSON.parse(window.localStorage.getItem("cart-count"));
+        cart.innerHTML = cartIntialValue;
+      }
+      var cartCurrentValue = cartIntialValue + 1;
+      window.localStorage.setItem("cart-count", cartCurrentValue);
+      cart.innerHTML = window.localStorage.getItem("cart-count");
+    }
+    cart.innerHTML = window.localStorage.getItem("cart-count");
+
+    addToCartBtn.addEventListener('click', async() => {
+       var response = await fetch(detailsURL);
+       var productData = await response.json()
+       console.log(productData)
+       addToCart(productData);
+       cartCount()
+    })
+
+  </script>
+
+</body>
+
+</html>
